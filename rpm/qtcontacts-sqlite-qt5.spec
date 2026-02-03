@@ -54,4 +54,3 @@ This package contains extension headers for the qtcontacts-sqlite-qt5 library.
 %files extensions-devel
 %{_libdir}/pkgconfig/qtcontacts-sqlite-qt5-extensions.pc
 %{_includedir}/qtcontacts-sqlite-qt5-extensions/*
-

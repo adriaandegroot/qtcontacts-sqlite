@@ -185,4 +185,3 @@ void Semaphore::error(const char *msg, int error)
 {
     semaphoreError(msg, m_identifier.toUtf8().constData(), error);
 }
-

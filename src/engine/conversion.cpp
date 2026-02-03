@@ -397,4 +397,3 @@ QString gender(int type)
 }
 
 }
-

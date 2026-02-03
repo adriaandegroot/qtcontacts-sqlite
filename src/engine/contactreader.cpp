@@ -329,7 +329,8 @@ static void setValues(QContactGender *detail, QSqlQuery *query, const int offset
 {
     typedef QContactGender T;
 
-    setValue(detail, T::FieldGender, static_cast<QContactGender::GenderType>(query->value(offset + 0).toString().toInt()));
+    setValue(detail, T::FieldGender,
+             static_cast<QContactGender::GenderType>(query->value(offset + 0).toString().toInt()));
 }
 
 static const FieldInfo geoLocationFields[] =
@@ -955,8 +956,8 @@ static bool matchOnType(const T1 &filter, T2 type)
 template<typename T, typename F>
 static bool filterOnField(const QContactDetailFilter &filter, F field)
 {
-    return (filter.detailType() == T::Type &&
-            filter.detailField() == field);
+    return (filter.detailType() == T::Type
+            && filter.detailField() == field);
 }
 
 template<typename F>
@@ -1061,8 +1062,8 @@ static QString buildWhere(
     }
 
     if (!filter.value().isValid()     // "match if detail and field exists, don't care about value" filter
-        || (filterOnField<QContactSyncTarget>(filter, QContactSyncTarget::FieldSyncTarget) &&
-            filter.value().toString().isEmpty())) { // match all sync targets if empty sync target filter
+        || (filterOnField<QContactSyncTarget>(filter, QContactSyncTarget::FieldSyncTarget)
+            && filter.value().toString().isEmpty())) { // match all sync targets if empty sync target filter
         const QString comparison(QStringLiteral("%1 IS NOT NULL"));
         return detail.where(queryContacts).arg(comparison.arg(field.column));
     }
@@ -1145,8 +1146,10 @@ static QString buildWhere(
         }
 
         bool dateField = field.fieldType == DateField;
-        bool stringField = field.fieldType == StringField || field.fieldType == StringListField ||
-                           field.fieldType == LocalizedField || field.fieldType == LocalizedListField;
+        bool stringField = field.fieldType == StringField
+                           || field.fieldType == StringListField
+                           || field.fieldType == LocalizedField
+                           || field.fieldType == LocalizedListField;
         bool phoneNumberMatch = filter.matchFlags() & QContactFilter::MatchPhoneNumber;
         bool fixedString = filter.matchFlags() & QContactFilter::MatchFixedString;
         bool useNormalizedNumber = false;
@@ -1158,7 +1161,9 @@ static QString buildWhere(
 
         // We need to perform case-insensitive matching if MatchFixedString is specified (unless
         // CaseSensitive is also specified)
-        bool caseInsensitive = stringField && fixedString && ((filter.matchFlags() & QContactFilter::MatchCaseSensitive) == 0);
+        bool caseInsensitive = stringField
+                               && fixedString
+                               && ((filter.matchFlags() & QContactFilter::MatchCaseSensitive) == 0);
 
         QString clause(detail.where(queryContacts));
         QString comparison = QStringLiteral("%1");
@@ -1179,10 +1184,10 @@ static QString buildWhere(
         if (phoneNumberMatch) {
             // If the phone number match is on the number field of a phoneNumber detail, then
             // match on the normalized number rather than the unconstrained number (for simple matches)
-            useNormalizedNumber = (filterOnField<QContactPhoneNumber>(filter, QContactPhoneNumber::FieldNumber) &&
-                                   globValue != QContactFilter::MatchStartsWith &&
-                                   globValue != QContactFilter::MatchContains &&
-                                   globValue != QContactFilter::MatchEndsWith);
+            useNormalizedNumber = (filterOnField<QContactPhoneNumber>(filter, QContactPhoneNumber::FieldNumber)
+                                   && globValue != QContactFilter::MatchStartsWith
+                                   && globValue != QContactFilter::MatchContains
+                                   && globValue != QContactFilter::MatchEndsWith);
 
             if (useNormalizedNumber) {
                 // Normalize the input for comparison
@@ -1273,11 +1278,14 @@ static QString buildWhere(
     } while (false);
 
     *failed = true;
-    qWarning() << QString::fromLatin1("Failed to buildWhere with DetailFilter detail: %1 field: %2").arg(filter.detailType()).arg(filter.detailField());
+    qWarning() << QString::fromLatin1("Failed to buildWhere with DetailFilter detail: %1 field: %2")
+                      .arg(filter.detailType()).arg(filter.detailField());
+
     return QStringLiteral("FALSE");
 }
 
-static QString buildWhere(const QContactDetailRangeFilter &filter, bool queryContacts, QVariantList *bindings, bool *failed)
+static QString buildWhere(const QContactDetailRangeFilter &filter, bool queryContacts, QVariantList *bindings,
+                          bool *failed)
 {
     const DetailInfo &detail(detailInformation(filter.detailType()));
     if (detail.detailType == QContactDetail::TypeUndefined) {
@@ -1307,9 +1315,9 @@ static QString buildWhere(const QContactDetailRangeFilter &filter, bool queryCon
     QString comparison;
     bool dateField = field.fieldType == DateField;
     bool stringField = field.fieldType == StringField || field.fieldType == LocalizedField;
-    bool caseInsensitive = stringField &&
-                           filter.matchFlags() & QContactFilter::MatchFixedString &&
-                           (filter.matchFlags() & QContactFilter::MatchCaseSensitive) == 0;
+    bool caseInsensitive = stringField
+                           && filter.matchFlags() & QContactFilter::MatchFixedString
+                           && (filter.matchFlags() & QContactFilter::MatchCaseSensitive) == 0;
 
     bool needsAnd = false;
     if (filter.minValue().isValid()) {
@@ -1361,7 +1369,8 @@ static QString buildWhere(const QContactDetailRangeFilter &filter, bool queryCon
     return detail.where(queryContacts).arg(comparison.arg(comparisonArg));
 }
 
-static QString buildWhere(const QContactIdFilter &filter, ContactsDatabase &db, const QString &table, QVariantList *bindings, bool *failed)
+static QString buildWhere(const QContactIdFilter &filter, ContactsDatabase &db, const QString &table,
+                          QVariantList *bindings, bool *failed)
 {
     const QList<QContactId> &filterIds(filter.ids());
     if (filterIds.isEmpty()) {
@@ -1416,7 +1425,8 @@ static QString buildWhere(const QContactRelationshipFilter &filter, QVariantList
 
     quint32 dbId = ContactId::databaseId(rci);
 
-    if (!rci.managerUri().isEmpty() && !rci.managerUri().startsWith(QStringLiteral("qtcontacts:org.nemomobile.contacts.sqlite"))) {
+    if (!rci.managerUri().isEmpty()
+        && !rci.managerUri().startsWith(QStringLiteral("qtcontacts:org.nemomobile.contacts.sqlite"))) {
         *failed = true;
         qWarning() << "Cannot buildWhere with invalid manager URI:" << rci.managerUri();
         return QStringLiteral("FALSE");
@@ -1526,7 +1536,8 @@ static QString buildWhere(const QContactRelationshipFilter &filter, QVariantList
     return statement;
 }
 
-static QString buildWhere(const QContactChangeLogFilter &filter, QVariantList *bindings, bool *failed, bool *transientModifiedRequired)
+static QString buildWhere(const QContactChangeLogFilter &filter, QVariantList *bindings, bool *failed,
+                          bool *transientModifiedRequired)
 {
     static const QString statement(QStringLiteral("%1 >= ?"));
     bindings->append(ContactsDatabase::dateTimeString(filter.since().toUTC()));
@@ -1571,7 +1582,8 @@ static QString buildWhere(
 
     QStringList fragments;
     foreach (const QContactFilter &filter, filters) {
-        const QString fragment = buildWhere(filter, db, table, detailType, bindings, failed, transientModifiedRequired, globalPresenceRequired);
+        const QString fragment = buildWhere(filter, db, table, detailType, bindings, failed,
+                                            transientModifiedRequired, globalPresenceRequired);
         if (!*failed && !fragment.isEmpty()) {
             fragments.append(fragment);
         }
@@ -1686,7 +1698,8 @@ static QString buildDetailWhere(
             return buildWhere(detailFilter, false, bindings, failed);
         } else {
             *failed = true;
-            qWarning() << QString::fromLatin1("Cannot build detail query with mismatched details type: %1 != %2").arg(detailType).arg(detailFilter.detailType());
+            qWarning() << QString::fromLatin1("Cannot build detail query with mismatched details type: %1 != %2")
+                              .arg(detailType).arg(detailFilter.detailType());
             return QStringLiteral("FALSE");
         }
     }
@@ -1743,7 +1756,8 @@ static QString buildOrderBy(
         qWarning() << "Cannot buildOrderBy with unknown detail type:" << order.detailType();
         return QString();
     } else if (detailType != QContactDetail::TypeUndefined && detail.detailType != detailType) {
-        qWarning() << QString::fromLatin1("Cannot buildOrderBy with unknown detail mismatched detail types: %1 != %2").arg(detailType).arg(order.detailType());
+        qWarning() << QString::fromLatin1("Cannot buildOrderBy with unknown detail mismatched detail types: %1 != %2")
+                          .arg(detailType).arg(order.detailType());
         return QString();
     }
 
@@ -1760,7 +1774,8 @@ static QString buildOrderBy(
         return QString();
     }
 
-    const bool isDisplayLabelGroup = detail.detailType == QContactDisplayLabel::Type && field.field == QContactDisplayLabel__FieldLabelGroup;
+    const bool isDisplayLabelGroup = detail.detailType == QContactDisplayLabel::Type
+                                     && field.field == QContactDisplayLabel__FieldLabelGroup;
     QString sortExpression(joinToSort
             ? QStringLiteral("%1.%2")
                 .arg(detail.table)
@@ -1772,8 +1787,8 @@ static QString buildOrderBy(
     bool localized = field.fieldType == LocalizedField;
 
     // Special case for accessing transient data
-    if (detail.detailType == detailIdentifier<QContactGlobalPresence>() &&
-        field.field == QContactGlobalPresence::FieldPresenceState) {
+    if (detail.detailType == detailIdentifier<QContactGlobalPresence>()
+        && field.field == QContactGlobalPresence::FieldPresenceState) {
         // We need to coalesce the transient values with the table values
         *globalPresenceRequired = true;
 
@@ -1792,8 +1807,8 @@ static QString buildOrderBy(
                                                 "WHEN 6 THEN 5 "
                                                        "ELSE 6 END").arg(sortExpression);
 #endif
-    } else if (detail.detailType == detailIdentifier<QContactTimestamp>() &&
-               field.field == QContactTimestamp::FieldModificationTimestamp) {
+    } else if (detail.detailType == detailIdentifier<QContactTimestamp>()
+               && field.field == QContactTimestamp::FieldModificationTimestamp) {
         *transientModifiedRequired = true;
 
         // Look at the temporary modified timestamp if present, otherwise use the normal value
@@ -1817,7 +1832,8 @@ static QString buildOrderBy(
         if (localized && useLocale) {
             result.append(QStringLiteral(" COLLATE localeCollation"));
         } else {
-            result.append((order.caseSensitivity() == Qt::CaseSensitive) ? QStringLiteral(" COLLATE RTRIM") : QStringLiteral(" COLLATE NOCASE"));
+            result.append((order.caseSensitivity() == Qt::CaseSensitive) ? QStringLiteral(" COLLATE RTRIM")
+                                                                         : QStringLiteral(" COLLATE NOCASE"));
         }
     }
 
@@ -2250,9 +2266,15 @@ QContactManager::Error ContactReader::fetchContacts(const QContactCollectionId &
     QContactCollectionFilter collectionFilter;
     collectionFilter.setCollectionId(collectionId);
 
-    const QContactFilter addedContactsFilter = collectionFilter & QContactStatusFlags::matchFlag(QContactStatusFlags::IsAdded, QContactFilter::MatchContains);
-    const QContactFilter modifiedContactsFilter = collectionFilter & QContactStatusFlags::matchFlag(QContactStatusFlags::IsModified, QContactFilter::MatchContains);
-    const QContactFilter deletedContactsFilter = collectionFilter & QContactStatusFlags::matchFlag(QContactStatusFlags::IsDeleted, QContactFilter::MatchContains);
+    const QContactFilter addedContactsFilter = collectionFilter
+                                               & QContactStatusFlags::matchFlag(QContactStatusFlags::IsAdded,
+                                                                                QContactFilter::MatchContains);
+    const QContactFilter modifiedContactsFilter = collectionFilter
+                                                  & QContactStatusFlags::matchFlag(QContactStatusFlags::IsModified,
+                                                                                   QContactFilter::MatchContains);
+    const QContactFilter deletedContactsFilter = collectionFilter
+                                                 & QContactStatusFlags::matchFlag(QContactStatusFlags::IsDeleted,
+                                                                                  QContactFilter::MatchContains);
 
     // optimisation: if the caller doesn't care about unmodified contacts,
     // we can save some memory by only fetching added/modified/deleted contacts.
@@ -2314,7 +2336,8 @@ QContactManager::Error ContactReader::readContacts(
     QString join;
     bool transientModifiedRequired = false;
     bool globalPresenceRequired = false;
-    const QString orderBy = buildOrderBy(order, &join, &transientModifiedRequired, &globalPresenceRequired, m_database.localized());
+    const QString orderBy = buildOrderBy(order, &join, &transientModifiedRequired, &globalPresenceRequired,
+                                         m_database.localized());
 
     bool whereFailed = false;
     QVariantList bindings;
@@ -2507,7 +2530,8 @@ QContactManager::Error ContactReader::queryContacts(
             }
 
             if (err == QContactManager::NoError) {
-                err = queryContacts(tableName, contacts, fetchHint, relaxConstraints, keepChangeFlags, contactQuery, relationshipQuery);
+                err = queryContacts(tableName, contacts, fetchHint, relaxConstraints, keepChangeFlags,
+                                    contactQuery, relationshipQuery);
             }
 
             contactQuery.finish();
@@ -2633,8 +2657,10 @@ QContactManager::Error ContactReader::queryContacts(
         contact.setCollectionId(apiCollectionId);
 
         QContactTimestamp timestamp;
-        setValue(&timestamp, QContactTimestamp::FieldCreationTimestamp    , ContactsDatabase::fromDateTimeString(contactQuery.value(col++).toString()));
-        setValue(&timestamp, QContactTimestamp::FieldModificationTimestamp, ContactsDatabase::fromDateTimeString(contactQuery.value(col++).toString()));
+        setValue(&timestamp, QContactTimestamp::FieldCreationTimestamp,
+                 ContactsDatabase::fromDateTimeString(contactQuery.value(col++).toString()));
+        setValue(&timestamp, QContactTimestamp::FieldModificationTimestamp,
+                 ContactsDatabase::fromDateTimeString(contactQuery.value(col++).toString()));
         col++; // ignore Deleted timestamp.
 
         QContactStatusFlags flags;
@@ -2676,7 +2702,8 @@ QContactManager::Error ContactReader::queryContacts(
                 // Update the contact timestamp to that of the transient details
                 setValue(&timestamp, QContactTimestamp::FieldModificationTimestamp, transientDetails.first);
 
-                QList<QContactDetail>::const_iterator it = transientDetails.second.constBegin(), end = transientDetails.second.constEnd();
+                QList<QContactDetail>::const_iterator it = transientDetails.second.constBegin(),
+                    end = transientDetails.second.constEnd();
                 for ( ; it != end; ++it) {
                     // Copy the transient detail into the contact
                     const QContactDetail &transient(*it);
@@ -2686,8 +2713,8 @@ QContactManager::Error ContactReader::queryContacts(
                     if (transientType == QContactGlobalPresence::Type) {
                         // If global presence is in the transient details, the IsOnline status flag is out of date
                         const int presenceState = transient.value<int>(QContactGlobalPresence::FieldPresenceState);
-                        const bool isOnline(presenceState >= QContactPresence::PresenceAvailable &&
-                                            presenceState <= QContactPresence::PresenceExtendedAway);
+                        const bool isOnline(presenceState >= QContactPresence::PresenceAvailable
+                                            && presenceState <= QContactPresence::PresenceExtendedAway);
                         flags.setFlag(QContactStatusFlags::IsOnline, isOnline);
                     }
 
@@ -2849,14 +2876,16 @@ QContactManager::Error ContactReader::readDeletedContactIds(
                 if (filterOnField<QContactSyncTarget>(detailFilter, QContactSyncTarget::FieldSyncTarget)) {
                     syncTarget = detailFilter.value().toString();
                 } else {
-                    qWarning() << "Cannot readDeletedContactIds with unsupported detail filter type:" << detailFilter.detailType();
+                    qWarning() << "Cannot readDeletedContactIds with unsupported detail filter type:"
+                               << detailFilter.detailType();
                     return QContactManager::UnspecifiedError;
                 }
             } else if (filterType == QContactFilter::CollectionFilter) {
                 const QContactCollectionFilter &collectionFilter(static_cast<const QContactCollectionFilter &>(partialFilter));
                 collectionIds = collectionFilter.collectionIds().toList();
                 if (collectionIds.size() > 1) {
-                    qWarning() << "Cannot readDeletedContactIds with more than one collection specified:" <<  collectionIds.size();
+                    qWarning() << "Cannot readDeletedContactIds with more than one collection specified:"
+                               <<  collectionIds.size();
                     return QContactManager::UnspecifiedError;
                 }
             } else {
@@ -2941,7 +2970,8 @@ QContactManager::Error ContactReader::readContactIds(
     QString join;
     bool transientModifiedRequired = false;
     bool globalPresenceRequired = false;
-    const QString orderBy = buildOrderBy(order, &join, &transientModifiedRequired, &globalPresenceRequired, m_database.localized());
+    const QString orderBy = buildOrderBy(order, &join, &transientModifiedRequired, &globalPresenceRequired,
+                                         m_database.localized());
 
     bool failed = false;
     QVariantList bindings;
@@ -3180,9 +3210,13 @@ QContactManager::Error ContactReader::readDetails(
                     "%5").arg(  // LIMIT
                 fieldNames.join(QStringLiteral(", ")),
                 QLatin1String(info.table),
-                !where.isEmpty() ? QStringLiteral(" WHERE ") + where : QString(),
-                !orderBy.isEmpty() ? QStringLiteral(" ORDER BY ") + orderBy : QStringLiteral(" ORDER BY maxId DESC"), // If there's no sort order prioritize the most recent entries.
-                maximumCount > 0 ? QStringLiteral(" LIMIT %1").arg(maximumCount): QString());
+                !where.isEmpty() ? QStringLiteral(" WHERE ") + where
+                                 : QString(),
+                !orderBy.isEmpty() ? QStringLiteral(" ORDER BY ") + orderBy
+                                   : // If there's no sort order prioritize the most recent entries.
+                                     QStringLiteral(" ORDER BY maxId DESC"),
+                maximumCount > 0 ? QStringLiteral(" LIMIT %1").arg(maximumCount)
+                                 : QString());
 
     QSqlQuery query(m_database);
     query.setForwardOnly(true);

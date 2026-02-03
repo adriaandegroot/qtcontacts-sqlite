@@ -38,7 +38,7 @@
 #include "../extensions/displaylabelgroupgenerator.h"
 
 #ifdef HAS_MLITE
-#include <mgconfitem.h>
+#include <mdconfitem.h>
 #endif
 
 #include <QHash>
@@ -148,8 +148,11 @@ public:
     bool rollbackTransaction();
 
     bool createTemporaryContactIdsTable(const QString &table, const QVariantList &boundIds, int limit = 0);
-    bool createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where, const QString &orderBy, const QVariantList &boundValues, int limit = 0);
-    bool createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where, const QString &orderBy, const QMap<QString, QVariant> &boundValues, int limit = 0);
+    bool createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where,
+                                        const QString &orderBy, const QVariantList &boundValues, int limit = 0);
+    bool createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where,
+                                        const QString &orderBy, const QMap<QString, QVariant> &boundValues,
+                                        int limit = 0);
 
     void clearTemporaryContactIdsTable(const QString &table);
 
@@ -206,7 +209,7 @@ private:
     QScopedPointer<QtContactsSqliteExtensions::DisplayLabelGroupGenerator> m_defaultGenerator;
     QMap<QString, int> m_knownDisplayLabelGroupsSortValues;
 #ifdef HAS_MLITE
-    MGConfItem m_groupPropertyConf;
+    MDConfItem m_groupPropertyConf;
 #endif // HAS_MLITE
 };
 
