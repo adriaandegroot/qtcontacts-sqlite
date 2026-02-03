@@ -1309,9 +1309,9 @@ ContactsEngine::ContactsEngine(const QString &name, const QMap<QString, QString>
     : m_name(name)
     , m_parameters(parameters)
 {
-    static bool registered = qRegisterMetaType<QList<int> >("QList<int>") &&
-                             qRegisterMetaType<QList<QContactDetail::DetailType> >("QList<QContactDetail::DetailType>") &&
-                             qRegisterMetaTypeStreamOperators<QList<int> >();
+    static bool registered = qRegisterMetaType<QList<int> >("QList<int>")
+                             && qRegisterMetaType<QList<QContactDetail::DetailType> >("QList<QContactDetail::DetailType>")
+                             && qRegisterMetaTypeStreamOperators<QList<int> >();
     Q_UNUSED(registered)
 
     if (isTrue(m_parameters.value(QString::fromLatin1("nonprivileged")))) {
@@ -1862,12 +1862,14 @@ void ContactsEngine::regenerateDisplayLabel(QContact &contact, bool *emitDisplay
     QContactManager::Error displayLabelError = QContactManager::NoError;
     const QString label = synthesizedDisplayLabel(contact, &displayLabelError);
     if (displayLabelError != QContactManager::NoError) {
-        QTCONTACTS_SQLITE_DEBUG(QString::fromLatin1("Unable to regenerate displayLabel for contact: %1").arg(ContactId::toString(contact)));
+        QTCONTACTS_SQLITE_DEBUG(QString::fromLatin1("Unable to regenerate displayLabel for contact: %1")
+                                    .arg(ContactId::toString(contact)));
     }
 
     QContact tempContact(contact);
     setContactDisplayLabel(&tempContact, label, QString(), -1);
-    const QString group = m_database ? m_database->determineDisplayLabelGroup(tempContact, emitDisplayLabelGroupChange) : QString();
+    const QString group = m_database ? m_database->determineDisplayLabelGroup(tempContact, emitDisplayLabelGroupChange)
+                                     : QString();
     const int sortOrder = m_database ? m_database->displayLabelGroupSortValue(group) : -1;
     setContactDisplayLabel(&contact, label, group, sortOrder);
 }
@@ -2247,7 +2249,8 @@ bool ContactsEngine::regenerateAggregatesIfNeeded()
 ContactReader *ContactsEngine::reader() const
 {
     if (!m_synchronousReader) {
-        m_synchronousReader.reset(new ContactReader(const_cast<ContactsEngine *>(this)->database(), const_cast<ContactsEngine *>(this)->managerUri()));
+        m_synchronousReader.reset(new ContactReader(const_cast<ContactsEngine *>(this)->database(),
+                                                    const_cast<ContactsEngine *>(this)->managerUri()));
     }
     return m_synchronousReader.data();
 }
@@ -2259,4 +2262,3 @@ ContactWriter *ContactsEngine::writer()
     }
     return m_synchronousWriter.data();
 }
-

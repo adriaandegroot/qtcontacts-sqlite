@@ -2771,8 +2771,9 @@ static bool dropTransientTables(ContactsDatabase &cdb, QSqlDatabase &db, const Q
 }
 
 template<typename ValueContainer>
-bool createTemporaryContactIdsTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table, bool filter, const QVariantList &boundIds,
-                                    const QString &join, const QString &where, const QString &orderBy, const ValueContainer &boundValues, int limit)
+bool createTemporaryContactIdsTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table, bool filter,
+                                    const QVariantList &boundIds, const QString &join, const QString &where,
+                                    const QString &orderBy, const ValueContainer &boundValues, int limit)
 {
     static const QString createStatement(QStringLiteral("CREATE TABLE IF NOT EXISTS temp.%1 (contactId INTEGER)"));
     static const QString insertFilterStatement(QStringLiteral("INSERT INTO temp.%1 (contactId) SELECT Contacts.contactId FROM Contacts %2 %3"));
@@ -2874,7 +2875,8 @@ void clearTemporaryContactIdsTable(ContactsDatabase &cdb, QSqlDatabase &db, cons
     dropOrDeleteTable(cdb, db, table);
 }
 
-bool createTemporaryContactTimestampTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table, const QList<QPair<quint32, QString> > &values)
+bool createTemporaryContactTimestampTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table,
+                                          const QList<QPair<quint32, QString> > &values)
 {
     static const QString createStatement(QStringLiteral("CREATE TABLE IF NOT EXISTS temp.%1 ("
                                                             "contactId INTEGER PRIMARY KEY ASC,"
@@ -2935,7 +2937,8 @@ void clearTemporaryContactTimestampTable(ContactsDatabase &cdb, QSqlDatabase &db
     dropOrDeleteTable(cdb, db, table);
 }
 
-bool createTemporaryContactPresenceTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table, const QList<QPair<quint32, qint64> > &values)
+bool createTemporaryContactPresenceTable(ContactsDatabase &cdb, QSqlDatabase &, const QString &table,
+                                         const QList<QPair<quint32, qint64> > &values)
 {
     static const QString createStatement(QStringLiteral("CREATE TABLE IF NOT EXISTS temp.%1 ("
                                                             "contactId INTEGER PRIMARY KEY ASC,"
@@ -2982,7 +2985,8 @@ bool createTemporaryContactPresenceTable(ContactsDatabase &cdb, QSqlDatabase &, 
 
                 const int state(pair.second);
                 insertQuery.addBindValue(QVariant(state));
-                insertQuery.addBindValue(QVariant(state >= QContactPresence::PresenceAvailable && state <= QContactPresence::PresenceExtendedAway));
+                insertQuery.addBindValue(QVariant(state >= QContactPresence::PresenceAvailable
+                                                  && state <= QContactPresence::PresenceExtendedAway));
             }
 
             if (!ContactsDatabase::execute(insertQuery)) {
@@ -3053,7 +3057,8 @@ void clearTemporaryValuesTable(ContactsDatabase &cdb, QSqlDatabase &db, const QS
     dropOrDeleteTable(cdb, db, table);
 }
 
-static bool createTransientContactIdsTable(ContactsDatabase &cdb, QSqlDatabase &db, const QString &table, const QVariantList &ids, QString *transientTableName)
+static bool createTransientContactIdsTable(ContactsDatabase &cdb, QSqlDatabase &db, const QString &table,
+                                           const QVariantList &ids, QString *transientTableName)
 {
     static const QString createTableStatement(QStringLiteral("CREATE TABLE %1 (contactId INTEGER)"));
     static const QString insertIdsStatement(QStringLiteral("INSERT INTO %1 (contactId) VALUES(:contactId)"));
@@ -3119,7 +3124,8 @@ static QVector<QtContactsSqliteExtensions::DisplayLabelGroupGenerator*> initiali
     for (const QString &plugin : pluginNames) {
         if (plugin.endsWith(QStringLiteral(".so"))) {
             QPluginLoader loader(pluginsPath + plugin);
-            QtContactsSqliteExtensions::DisplayLabelGroupGenerator *generator = qobject_cast<QtContactsSqliteExtensions::DisplayLabelGroupGenerator *>(loader.instance());
+            QtContactsSqliteExtensions::DisplayLabelGroupGenerator *generator
+                = qobject_cast<QtContactsSqliteExtensions::DisplayLabelGroupGenerator *>(loader.instance());
             bool inserted = false;
             const int prio = generator->priority();
             for (int i = 0; i < generators.size(); ++i) {
@@ -3388,7 +3394,8 @@ bool ContactsDatabase::open(const QString &connectionName, bool nonprivileged, b
     } else {
         // not privileged.
         if (!databaseDir.mkpath(systemDataDirPath + databaseSubdir)) {
-            QTCONTACTS_SQLITE_WARNING(QString::fromLatin1("Unable to create contacts database directory: %1").arg(systemDataDirPath + databaseSubdir));
+            QTCONTACTS_SQLITE_WARNING(QString::fromLatin1("Unable to create contacts database directory: %1")
+                                          .arg(systemDataDirPath + databaseSubdir));
             return false;
         }
         databaseDir = systemDataDirPath + databaseSubdir;
@@ -3465,7 +3472,8 @@ bool ContactsDatabase::open(const QString &connectionName, bool nonprivileged, b
         QSqlQuery versionQuery(m_database);
         versionQuery.prepare("PRAGMA user_version");
         if (!versionQuery.exec() || !versionQuery.next()) {
-            QTCONTACTS_SQLITE_WARNING(QString::fromLatin1("Failed to query existing database schema version: %1").arg(versionQuery.lastError().text()));
+            QTCONTACTS_SQLITE_WARNING(QString::fromLatin1("Failed to query existing database schema version: %1")
+                                          .arg(versionQuery.lastError().text()));
             m_database.close();
             return false;
         }
@@ -3611,7 +3619,8 @@ QPair<QDateTime, QList<QContactDetail> > ContactsDatabase::transientDetails(quin
     return m_transientStore.contactDetails(contactId);
 }
 
-bool ContactsDatabase::setTransientDetails(quint32 contactId, const QDateTime &timestamp, const QList<QContactDetail> &details)
+bool ContactsDatabase::setTransientDetails(quint32 contactId, const QDateTime &timestamp,
+                                           const QList<QContactDetail> &details)
 {
     return m_transientStore.setContactDetails(contactId, timestamp, details);
 }
@@ -3726,19 +3735,25 @@ QString ContactsDatabase::expandQuery(const QSqlQuery &query)
 bool ContactsDatabase::createTemporaryContactIdsTable(const QString &table, const QVariantList &boundIds, int limit)
 {
     QMutexLocker locker(accessMutex());
-    return ::createTemporaryContactIdsTable(*this, m_database, table, false, boundIds, QString(), QString(), QString(), QVariantList(), limit);
+    return ::createTemporaryContactIdsTable(*this, m_database, table, false, boundIds, QString(), QString(), QString(),
+                                            QVariantList(), limit);
 }
 
-bool ContactsDatabase::createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where, const QString &orderBy, const QVariantList &boundValues, int limit)
+bool ContactsDatabase::createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where,
+                                                      const QString &orderBy, const QVariantList &boundValues, int limit)
 {
     QMutexLocker locker(accessMutex());
-    return ::createTemporaryContactIdsTable(*this, m_database, table, true, QVariantList(), join, where, orderBy, boundValues, limit);
+    return ::createTemporaryContactIdsTable(*this, m_database, table, true, QVariantList(), join, where,
+                                            orderBy, boundValues, limit);
 }
 
-bool ContactsDatabase::createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where, const QString &orderBy, const QMap<QString, QVariant> &boundValues, int limit)
+bool ContactsDatabase::createTemporaryContactIdsTable(const QString &table, const QString &join, const QString &where,
+                                                      const QString &orderBy, const QMap<QString, QVariant> &boundValues,
+                                                      int limit)
 {
     QMutexLocker locker(accessMutex());
-    return ::createTemporaryContactIdsTable(*this, m_database, table, true, QVariantList(), join, where, orderBy, boundValues, limit);
+    return ::createTemporaryContactIdsTable(*this, m_database, table, true, QVariantList(), join, where, orderBy,
+                                            boundValues, limit);
 }
 
 void ContactsDatabase::clearTemporaryContactIdsTable(const QString &table)
@@ -3759,7 +3774,8 @@ void ContactsDatabase::clearTemporaryValuesTable(const QString &table)
     ::clearTemporaryValuesTable(*this, m_database, table);
 }
 
-bool ContactsDatabase::createTransientContactIdsTable(const QString &table, const QVariantList &ids, QString *transientTableName)
+bool ContactsDatabase::createTransientContactIdsTable(const QString &table, const QVariantList &ids,
+                                                      QString *transientTableName)
 {
     QMutexLocker locker(accessMutex());
     return ::createTransientContactIdsTable(*this, m_database, table, ids, transientTableName);
@@ -3791,7 +3807,8 @@ bool ContactsDatabase::populateTemporaryTransientState(bool timestamps, bool glo
 
     {
         ContactsTransientStore::DataLock lock(m_transientStore.dataLock());
-        ContactsTransientStore::const_iterator it = m_transientStore.constBegin(lock), end = m_transientStore.constEnd(lock);
+        ContactsTransientStore::const_iterator it = m_transientStore.constBegin(lock),
+            end = m_transientStore.constEnd(lock);
         for ( ; it != end; ++it) {
             QPair<QDateTime, QList<QContactDetail> > details(it.value());
             if (details.first.isNull())
@@ -3804,7 +3821,8 @@ bool ContactsDatabase::populateTemporaryTransientState(bool timestamps, bool glo
             if (globalPresence) {
                 foreach (const QContactDetail &detail, details.second) {
                     if (detail.type() == QContactGlobalPresence::Type) {
-                        presenceValues.append(qMakePair<quint32, qint64>(it.key(), detail.value<int>(QContactGlobalPresence::FieldPresenceState)));
+                        presenceValues.append(qMakePair<quint32, qint64>(it.key(),
+                                                                         detail.value<int>(QContactGlobalPresence::FieldPresenceState)));
                         break;
                     }
                 }

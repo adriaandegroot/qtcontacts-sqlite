@@ -32,6 +32,7 @@
 
 #ifndef TRACE_P_H
 #define TRACE_P_H
+
 #include <QString>
 #include <QtDebug>
 
@@ -54,4 +55,3 @@ static bool qtcontacts_sqlite_debug_trace_enabled()
     } while (0)
 
 #endif
-

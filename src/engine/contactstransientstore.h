@@ -31,8 +31,8 @@
  */
 
 
-#ifndef __CONTACTSTRANSIENTSTORE_H__
-#define __CONTACTSTRANSIENTSTORE_H__
+#ifndef CONTACTSTRANSIENTSTORE_H
+#define CONTACTSTRANSIENTSTORE_H
 
 #include "memorytable_p.h"
 

@@ -168,7 +168,8 @@ private:
     quint32 getRegionGeneration(QSharedPointer<QSharedMemory> keyRegion) const;
     void setRegionGeneration(QSharedPointer<QSharedMemory> keyRegion, quint32 regionGeneration);
 
-    QSharedPointer<QSharedMemory> getDataRegion(const QString &identifier, quint32 generation, bool createIfNecessary, size_t dataSize = 0, bool reinitialize = false) const;
+    QSharedPointer<QSharedMemory> getDataRegion(const QString &identifier, quint32 generation, bool createIfNecessary,
+                                                size_t dataSize = 0, bool reinitialize = false) const;
 
     enum { DefaultWaitMs = 5000 };
 
@@ -426,7 +427,10 @@ QString SharedMemoryManager::getNativeIdentifier(const QString &identifier, bool
             // Try to create this file
             QFile pathFile;
             pathFile.setFileName(path);
-            pathFile.setPermissions(QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ReadGroup | QFileDevice::WriteGroup);
+            pathFile.setPermissions(QFileDevice::ReadOwner
+                                    | QFileDevice::WriteOwner
+                                    | QFileDevice::ReadGroup
+                                    | QFileDevice::WriteGroup);
             if (!pathFile.open(QIODevice::WriteOnly)) {
                 qWarning() << QStringLiteral("Failed to create native lock file %1: %2")
                         .arg(identifier).arg(path);
@@ -469,7 +473,9 @@ void SharedMemoryManager::setRegionGeneration(QSharedPointer<QSharedMemory> keyR
     std::memcpy(keyRegion->data(), keyData.constData(), keyData.size());
 }
 
-QSharedPointer<QSharedMemory> SharedMemoryManager::getDataRegion(const QString &identifier, quint32 generation, bool createIfNecessary, size_t dataSize, bool reinitialize) const
+QSharedPointer<QSharedMemory> SharedMemoryManager::getDataRegion(const QString &identifier, quint32 generation,
+                                                                 bool createIfNecessary, size_t dataSize,
+                                                                 bool reinitialize) const
 {
     // We must hold the data lock before calling this function
     const QString dataIdentifier(QStringLiteral("%1-data-%2").arg(identifier).arg(generation));
@@ -689,7 +695,8 @@ QPair<QDateTime, QList<QContactDetail> > ContactsTransientStore::contactDetails(
     return qMakePair(QDateTime(), QList<QContactDetail>());
 }
 
-bool ContactsTransientStore::setContactDetails(quint32 contactId, const QDateTime &timestamp, const QList<QContactDetail> &details)
+bool ContactsTransientStore::setContactDetails(quint32 contactId, const QDateTime &timestamp,
+                                               const QList<QContactDetail> &details)
 {
     SharedMemoryManager::TableHandle table(sharedMemory()->table(m_identifier));
     if (table) {
@@ -769,4 +776,3 @@ ContactsTransientStore::const_iterator ContactsTransientStore::constEnd(const Da
     const MemoryTable *tablePtr(lock.lock->m_table);
     return const_iterator(tablePtr, tablePtr->count());
 }
-

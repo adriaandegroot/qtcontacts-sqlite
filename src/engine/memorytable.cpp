@@ -583,4 +583,3 @@ const MemoryTable::const_iterator &MemoryTable::const_iterator::operator++()
     ++position;
     return *this;
 }
-

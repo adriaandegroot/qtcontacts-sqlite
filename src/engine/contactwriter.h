@@ -147,12 +147,18 @@ private:
     bool commitTransaction();
     void rollbackTransaction();
 
-    QContactManager::Error create(QContact *contact, const DetailList &definitionMask, bool withinTransaction, bool withinAggregateUpdate, bool withinSyncUpdate, bool recordUnhandledChangeFlags);
-    QContactManager::Error update(QContact *contact, const DetailList &definitionMask, bool *aggregateUpdated, bool withinTransaction, bool withinAggregateUpdate, bool withinSyncUpdate, bool recordUnhandledChangeFlags, bool transientUpdate);
-    QContactManager::Error write(quint32 contactId, const QContact &oldContact, QContact *contact, const DetailList &definitionMask, bool recordUnhandledChangeFlags);
+    QContactManager::Error create(QContact *contact, const DetailList &definitionMask, bool withinTransaction,
+                                  bool withinAggregateUpdate, bool withinSyncUpdate, bool recordUnhandledChangeFlags);
+    QContactManager::Error update(QContact *contact, const DetailList &definitionMask, bool *aggregateUpdated,
+                                  bool withinTransaction, bool withinAggregateUpdate, bool withinSyncUpdate,
+                                  bool recordUnhandledChangeFlags, bool transientUpdate);
+    QContactManager::Error write(quint32 contactId, const QContact &oldContact, QContact *contact,
+                                 const DetailList &definitionMask, bool recordUnhandledChangeFlags);
 
-    QContactManager::Error saveRelationships(const QList<QContactRelationship> &relationships, QMap<int, QContactManager::Error> *errorMap, bool withinAggregateUpdate);
-    QContactManager::Error removeRelationships(const QList<QContactRelationship> &relationships, QMap<int, QContactManager::Error> *errorMap);
+    QContactManager::Error saveRelationships(const QList<QContactRelationship> &relationships,
+                                             QMap<int, QContactManager::Error> *errorMap, bool withinAggregateUpdate);
+    QContactManager::Error removeRelationships(const QList<QContactRelationship> &relationships,
+                                               QMap<int, QContactManager::Error> *errorMap);
 
     QContactManager::Error removeDetails(const QVariantList &contactIds, bool onlyIfFlagged = false);
     QContactManager::Error removeContacts(const QVariantList &ids, bool onlyIfFlagged = false);
@@ -164,14 +170,22 @@ private:
     QContactManager::Error deleteCollection(const QContactCollectionId &collectionId);
 
     QContactManager::Error collectionIsAggregable(const QContactCollectionId &collectionId, bool *aggregable);
-    QContactManager::Error setAggregate(QContact *contact, quint32 contactId, bool update, const DetailList &definitionMask, bool withinTransaction, bool withinSyncUpdate);
-    QContactManager::Error updateOrCreateAggregate(QContact *contact, const DetailList &definitionMask, bool withinTransaction, bool withinSyncUpdate, bool createOnly = false, quint32 *aggregateContactId = 0);
+    QContactManager::Error setAggregate(QContact *contact, quint32 contactId, bool update,
+                                        const DetailList &definitionMask, bool withinTransaction,
+                                        bool withinSyncUpdate);
+    QContactManager::Error updateOrCreateAggregate(QContact *contact, const DetailList &definitionMask,
+                                                   bool withinTransaction, bool withinSyncUpdate,
+                                                   bool createOnly = false, quint32 *aggregateContactId = 0);
 
-    QContactManager::Error regenerateAggregates(const QList<quint32> &aggregateIds, const DetailList &definitionMask, bool withinTransaction);
+    QContactManager::Error regenerateAggregates(const QList<quint32> &aggregateIds, const DetailList &definitionMask,
+                                                bool withinTransaction);
     QContactManager::Error removeChildlessAggregates(QList<QContactId> *realRemoveIds);
     QContactManager::Error aggregateOrphanedContacts(bool withinTransaction, bool withinSyncUpdate);
 
-    ContactsDatabase::Query bindContactDetails(const QContact &contact, bool keepChangeFlags = false, bool recordUnhandledChangeFlags = false, const DetailList &definitionMask = DetailList(), quint32 contactId = 0);
+    ContactsDatabase::Query bindContactDetails(const QContact &contact, bool keepChangeFlags = false,
+                                               bool recordUnhandledChangeFlags = false,
+                                               const DetailList &definitionMask = DetailList(),
+                                               quint32 contactId = 0);
     ContactsDatabase::Query bindCollectionDetails(const QContactCollection &collection);
     ContactsDatabase::Query bindCollectionMetadataDetails(const QContactCollection &collection, int *count);
 
@@ -217,6 +231,5 @@ private:
     QSet<QContactCollectionId> m_removedCollectionIds;
     QSet<QContactCollectionId> m_changedCollectionIds;
 };
-
 
 #endif

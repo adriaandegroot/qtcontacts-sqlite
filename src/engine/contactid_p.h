@@ -76,4 +76,3 @@ namespace ContactCollectionId {
 } // namespace ContactId
 
 #endif // QTCONTACTSSQLITE_CONTACTIDIMPL
-

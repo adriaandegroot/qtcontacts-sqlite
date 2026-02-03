@@ -186,7 +186,8 @@ void ContactNotifier::selfContactIdChanged(QContactId oldId, QContactId newId)
 {
     if (oldId != newId) {
         QDBusMessage message = createSignal("selfContactIdChanged", m_nonprivileged);
-        message.setArguments(QVariantList() << QVariant::fromValue(ContactId::databaseId(oldId)) << QVariant::fromValue(ContactId::databaseId(newId)));
+        message.setArguments(QVariantList() << QVariant::fromValue(ContactId::databaseId(oldId))
+                                            << QVariant::fromValue(ContactId::databaseId(newId)));
         sendMessage(message);
     }
 }

@@ -134,8 +134,13 @@ public:
     QList<QContactCollection> collections(QContactManager::Error *error) const override;
     bool saveCollection(QContactCollection *collection, QContactManager::Error *error) override;
     bool removeCollection(const QContactCollectionId &collectionId, QContactManager::Error *error) override;
-    bool saveCollections(QList<QContactCollection> *collections, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error); // non-override.
-    bool removeCollections(const QList<QContactCollectionId> &collectionIds, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error); // non-override.
+
+    bool saveCollections(QList<QContactCollection> *collections,
+                         QMap<int, QContactManager::Error> *errorMap,
+                         QContactManager::Error *error); // non-override.
+    bool removeCollections(const QList<QContactCollectionId> &collectionIds,
+                           QMap<int, QContactManager::Error> *errorMap,
+                           QContactManager::Error *error); // non-override.
 
     void requestDestroyed(QContactAbstractRequest* req) override;
     void requestDestroyed(QObject* request) override;
@@ -235,4 +240,3 @@ private:
 };
 
 #endif
-
