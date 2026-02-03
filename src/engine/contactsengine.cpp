@@ -78,6 +78,12 @@
 
 #include <QtDebug>
 
+static bool isTrue(const QString &value)
+{
+    return (value.compare(QStringLiteral("true"), Qt::CaseInsensitive) == 0)
+           || value == QStringLiteral("1");
+}
+
 class Job
 {
 public:
@@ -1308,23 +1314,18 @@ ContactsEngine::ContactsEngine(const QString &name, const QMap<QString, QString>
                              qRegisterMetaTypeStreamOperators<QList<int> >();
     Q_UNUSED(registered)
 
-    QString nonprivileged = m_parameters.value(QString::fromLatin1("nonprivileged"));
-    if (nonprivileged.toLower() == QLatin1String("true") ||
-        nonprivileged.toInt() == 1) {
+    if (isTrue(m_parameters.value(QString::fromLatin1("nonprivileged")))) {
         setNonprivileged(true);
     }
 
     QString mergePresenceChanges = m_parameters.value(QString::fromLatin1("mergePresenceChanges"));
     if (mergePresenceChanges.isEmpty()) {
         qWarning("The 'mergePresenceChanges' option has not been configured - presence changes will only be reported via ContactManagerEngine::contactsPresenceChanged()");
-    } else if (mergePresenceChanges.toLower() == QLatin1String("true") ||
-               mergePresenceChanges.toInt() == 1) {
+    } else if (isTrue(mergePresenceChanges)) {
         setMergePresenceChanges(true);
     }
 
-    QString autoTest = m_parameters.value(QString::fromLatin1("autoTest"));
-    if (autoTest.toLower() == QLatin1String("true") ||
-        autoTest.toInt() == 1) {
+    if (isTrue(m_parameters.value(QString::fromLatin1("autoTest")))) {
         setAutoTest(true);
     }
 
@@ -1406,10 +1407,8 @@ QMap<QString, QString> ContactsEngine::managerParameters() const
 
 QMap<QString, QString> ContactsEngine::idInterpretationParameters() const
 {
-    const bool nonprivileged = m_parameters.value(QString::fromLatin1("nonprivileged")).compare(QStringLiteral("true"), Qt::CaseInsensitive) == 0
-                            || m_parameters.value(QString::fromLatin1("nonprivileged")).compare(QStringLiteral("1"),    Qt::CaseInsensitive) == 0;
-    const bool autoTest = m_parameters.value(QString::fromLatin1("autoTest")).compare(QStringLiteral("true"), Qt::CaseInsensitive) == 0
-                       || m_parameters.value(QString::fromLatin1("autoTest")).compare(QStringLiteral("1"),    Qt::CaseInsensitive) == 0;
+    const bool nonprivileged = isTrue(m_parameters.value(QString::fromLatin1("nonprivileged")));
+    const bool autoTest = isTrue(m_parameters.value(QString::fromLatin1("autoTest")));
 
     if (nonprivileged && autoTest) {
         return {
