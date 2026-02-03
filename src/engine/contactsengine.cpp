@@ -1320,7 +1320,8 @@ ContactsEngine::ContactsEngine(const QString &name, const QMap<QString, QString>
 
     QString mergePresenceChanges = m_parameters.value(QString::fromLatin1("mergePresenceChanges"));
     if (mergePresenceChanges.isEmpty()) {
-        qWarning("The 'mergePresenceChanges' option has not been configured - presence changes will only be reported via ContactManagerEngine::contactsPresenceChanged()");
+        QTCONTACTS_SQLITE_DEBUG("The 'mergePresenceChanges' option has not been configured - presence changes will only"
+                                " be reported via ContactManagerEngine::contactsPresenceChanged()");
     } else if (isTrue(mergePresenceChanges)) {
         setMergePresenceChanges(true);
     }
