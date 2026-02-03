@@ -429,7 +429,7 @@ public:
 
     void execute(ContactReader *, WriterProxy &writer) override
     {
-        m_error = writer->save(&m_collections, 0, &m_errorMap, false);
+        m_error = writer->save(&m_collections, &m_errorMap, false, false);
     }
 
     void updateState(QContactAbstractRequest::State state) override
