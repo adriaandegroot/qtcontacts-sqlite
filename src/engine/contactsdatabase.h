@@ -38,7 +38,7 @@
 #include "../extensions/displaylabelgroupgenerator.h"
 
 #ifdef HAS_MLITE
-#include <mgconfitem.h>
+#include <mdconfitem.h>
 #endif
 
 #include <QHash>
@@ -209,7 +209,7 @@ private:
     QScopedPointer<QtContactsSqliteExtensions::DisplayLabelGroupGenerator> m_defaultGenerator;
     QMap<QString, int> m_knownDisplayLabelGroupsSortValues;
 #ifdef HAS_MLITE
-    MGConfItem m_groupPropertyConf;
+    MDConfItem m_groupPropertyConf;
 #endif // HAS_MLITE
 };
 

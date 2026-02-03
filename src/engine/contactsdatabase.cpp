@@ -3276,7 +3276,7 @@ ContactsDatabase::ContactsDatabase(ContactsEngine *engine)
 #endif // HAS_MLITE
 {
 #ifdef HAS_MLITE
-    QObject::connect(&m_groupPropertyConf, &MGConfItem::valueChanged, [this, engine] {
+    QObject::connect(&m_groupPropertyConf, &MDConfItem::valueChanged, [this, engine] {
         this->regenerateDisplayLabelGroups();
         // expensive, but if we don't do it, in multi-process case some clients may not get updated...
         // if contacts backend were daemonised, this problem would go away...
