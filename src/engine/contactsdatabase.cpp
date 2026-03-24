@@ -3266,7 +3266,6 @@ void ContactsDatabase::Query::reportError(const char *text) const
 
 ContactsDatabase::ContactsDatabase(ContactsEngine *engine)
     : m_engine(engine)
-    , m_mutex(QMutex::Recursive)
     , m_nonprivileged(false)
     , m_autoTest(false)
     , m_localeName(QLocale().name())
@@ -3303,9 +3302,9 @@ ContactsDatabase::~ContactsDatabase()
     m_database.close();
 }
 
-QMutex *ContactsDatabase::accessMutex() const
+QRecursiveMutex *ContactsDatabase::accessMutex() const
 {
-    return const_cast<QMutex *>(&m_mutex);
+    return const_cast<QRecursiveMutex *>(&m_mutex);
 }
 
 ContactsDatabase::ProcessMutex *ContactsDatabase::processMutex() const
