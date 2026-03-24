@@ -1310,8 +1310,7 @@ ContactsEngine::ContactsEngine(const QString &name, const QMap<QString, QString>
     , m_parameters(parameters)
 {
     static bool registered = qRegisterMetaType<QList<int> >("QList<int>")
-                             && qRegisterMetaType<QList<QContactDetail::DetailType> >("QList<QContactDetail::DetailType>")
-                             && qRegisterMetaTypeStreamOperators<QList<int> >();
+                             && qRegisterMetaType<QList<QContactDetail::DetailType> >("QList<QContactDetail::DetailType>");
     Q_UNUSED(registered)
 
     if (isTrue(m_parameters.value(QString::fromLatin1("nonprivileged")))) {
