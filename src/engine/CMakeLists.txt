@@ -18,8 +18,9 @@ target_link_libraries(
     qtcontacts_sqlite
     PUBLIC
         Qt6::Core
-        Qt6::Sql
         Qt6::Core5Compat
+        Qt6::DBus
+        Qt6::Sql
         QtPIM6::Contacts
 )
 target_include_directories(

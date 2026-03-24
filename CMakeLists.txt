@@ -12,7 +12,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include(CTest)
 
 set(QT_VERSION 6)
-find_package(Qt6 COMPONENTS Core Sql Core5Compat)
+find_package(Qt6 COMPONENTS Core DBus Sql Core5Compat)
 find_package(QtPIM6 REQUIRED)
 
 add_subdirectory(src)
