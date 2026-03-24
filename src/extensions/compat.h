@@ -30,5 +30,18 @@
 #ifndef EXTENSIONS_COMPAT_H
 #define EXTENSIONS_COMPAT_H
 
+#include <QString>
+
+namespace compat
+{
+
+///@brief SkipEmptyParts when splitting strings
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+    static constexpr auto SkipEmptyParts = QString::SkipEmptyParts;
+#else
+    static constexpr auto SkipEmptyParts = Qt::SkipEmptyParts;
+#endif
+
+}
 
 #endif
