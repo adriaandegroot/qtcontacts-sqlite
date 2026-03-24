@@ -27,6 +27,15 @@ target_include_directories(
     PRIVATE
         ../extensions/
 )
+target_compile_definitions(
+    qtcontacts_sqlite
+    PRIVATE
+        SORT_PRESENCE_BY_AVAILABILITY
+        QTCONTACTS_SQLITE_DATABASE_NAME="contacts.db"
+        QTCONTACTS_SQLITE_PRIVILEGED_DIR="privileged"
+        QTCONTACTS_SQLITE_DATABASE_DIR="Contacts/qtcontacts-sqlite"
+        CONTACTS_DATABASE_PATH="${CMAKE_INSTALL_LIBDIR}/qtcontacts-sqlite-qt6/"
+)
 
 set_target_properties(
     qtcontacts_sqlite
