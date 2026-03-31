@@ -32,6 +32,7 @@
 
 #include "contactwriter.h"
 
+#include "compat.h"
 #include "contactsengine.h"
 #include "contactreader.h"
 #include "trace_p.h"
@@ -1932,7 +1933,7 @@ bool ContactWriter::storeOOB(const QString &scope, const QMap<QString, QVariant>
 
         // If the data is large, compress it to reduce the IO cost
         const QVariant &var(it.value());
-        if (var.type() == static_cast<QVariant::Type>(QMetaType::QByteArray)) {
+        if (isByteArray(var)) {
             const QByteArray uncompressed(var.value<QByteArray>());
             if (uncompressed.size() > 512) {
                 // Test the entropy of this data, if it is unlikely to compress significantly, don't try
@@ -1942,7 +1943,7 @@ bool ContactWriter::storeOOB(const QString &scope, const QMap<QString, QVariant>
                     continue;
                 }
             }
-        } else if (var.type() == static_cast<QVariant::Type>(QMetaType::QString)) {
+        } else if (isString(var)) {
             const QString uncompressed(var.value<QString>());
             if (uncompressed.size() > 256) {
                 dataValues.append(QVariant(qCompress(uncompressed.toUtf8())));
